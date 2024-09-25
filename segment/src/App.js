@@ -23,7 +23,7 @@ const App = () => {
   };
 
   const handleAddSchema = () => {
-    if (schemaToAdd === '') return; 
+    if (schemaToAdd === '') return;
 
     const selectedSchema = availableSchemas.find((schema) => schema.value === schemaToAdd);
 
@@ -41,7 +41,7 @@ const App = () => {
 
   const handleSaveSegment = async () => {
     const schemaData = selectedSchemas.map((schema) => `${schema.value}:${schema.label}`).join(',');
-    
+
     const queryParams = objectToQueryString({
       segment_name: segmentName,
       schema: schemaData,
@@ -49,7 +49,7 @@ const App = () => {
 
     const url = `https://webhook.site/e469b4c9-331a-42c0-8f0d-becd3cba0fcd?${queryParams}`;
 
-    console.log('GET URL:', url); 
+    console.log('GET URL:', url);
 
     try {
       const response = await fetch(url, {
@@ -100,7 +100,6 @@ const App = () => {
               )}
             </div>
 
-            {/* Dropdown to select schema */}
             <select value={schemaToAdd} onChange={handleSchemaSelect}>
               <option value="">Add schema to segment</option>
               {availableSchemas.map((schema) => (

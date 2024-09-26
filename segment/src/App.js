@@ -14,7 +14,6 @@ const App = () => {
     { label: 'City', value: 'city' },
     { label: 'State', value: 'state' },
   ]);
-
   const [schemaToAdd, setSchemaToAdd] = useState('');
 
   const handleSchemaSelect = (e) => {
@@ -26,30 +25,26 @@ const App = () => {
     if (schemaToAdd === '') return;
 
     const selectedSchema = availableSchemas.find((schema) => schema.value === schemaToAdd);
-
     setSelectedSchemas([...selectedSchemas, selectedSchema]);
     setAvailableSchemas(availableSchemas.filter((schema) => schema.value !== schemaToAdd));
-
     setSchemaToAdd('');
   };
 
-  const objectToQueryString = (obj) => {
-    return Object.keys(obj)
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]))
-      .join('&');
-  };
-
   const handleSaveSegment = async () => {
-    const schemaData = selectedSchemas.map((schema) => `${schema.value}:${schema.label}`).join(',');
-
-    const queryParams = objectToQueryString({
-      segment_name: segmentName,
-      schema: schemaData,
+    const schemaData = selectedSchemas.map((schema) => {
+      return { [schema.value]: schema.label };
     });
 
-    const url = `https://webhook.site/e469b4c9-331a-42c0-8f0d-becd3cba0fcd?${queryParams}`;
+    const payload = {
+      segment_name: segmentName,
+      schema: schemaData,
+    };
 
-    console.log('GET URL:', url);
+    const queryString = encodeURIComponent(JSON.stringify(payload));
+
+    const url = `https://webhook.site/e469b4c9-331a-42c0-8f0d-becd3cba0fcd?data=${queryString}`;
+
+    console.log('GET URL:', url); 
 
     try {
       const response = await fetch(url, {
@@ -110,9 +105,7 @@ const App = () => {
             </select>
 
             <button onClick={handleAddSchema}>+ Add new schema</button>
-
             <button onClick={handleSaveSegment}>Save the Segment</button>
-
             <button onClick={() => setShowModal(false)}>Cancel</button>
           </div>
         </div>
